@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Security | AI-Powered Python Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.5; }
+        .header { background: white; box-shadow: 0 1px 0 #e2e8f0; position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, #1f2b3e, #2c3e66); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .logo i { color: #3b82f6; font-size: 1.8rem; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #334155; font-weight: 500; cursor: pointer; }
+        .nav-links a:hover { color: #3b82f6; }
+        .mobile-menu-btn { display: none; font-size: 1.8rem; cursor: pointer; background: none; border: none; color: #334155; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; box-shadow: 2px 0 20px rgba(0,0,0,0.1); z-index: 1000; transition: left 0.3s ease; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header .logo { font-size: 1.3rem; }
+        .close-sidebar { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
+        .sidebar-nav { padding: 1rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 0.8rem 1.5rem; color: #334155; text-decoration: none; font-weight: 500; transition: 0.2s; cursor: pointer; }
+        .sidebar-nav a:hover { background: #f1f5f9; color: #3b82f6; }
+        .sidebar-nav a i { width: 24px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+        .auth-buttons { display: flex; gap: 0.8rem; align-items: center; }
+        .btn-login { background: transparent; border: 1.5px solid #3b82f6; padding: 0.55rem 1.3rem; border-radius: 40px; font-weight: 600; color: #3b82f6; cursor: pointer; transition: all 0.2s; }
+        .btn-login:hover { background: #eff6ff; transform: translateY(-1px); }
+        .btn-register { background: #3b82f6; border: none; padding: 0.55rem 1.3rem; border-radius: 40px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; }
+        .btn-register:hover { background: #2563eb; transform: translateY(-1px); }
+        .profile-menu { position: relative; cursor: pointer; }
+        .profile-trigger { display: flex; align-items: center; gap: 10px; background: #f1f5f9; padding: 0.4rem 1rem 0.4rem 0.8rem; border-radius: 60px; border: 1px solid #e2e8f0; }
+        .avatar-small { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; background-size: cover; background-position: center; }
+        .dropdown-menu { position: absolute; top: 50px; right: 0; background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 220px; opacity: 0; visibility: hidden; transition: 0.2s; z-index: 200; }
+        .profile-menu:hover .dropdown-menu { opacity: 1; visibility: visible; }
+        .dropdown-item { padding: 0.7rem 1.2rem; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .dropdown-item:hover { background: #f8fafc; }
+        .dropdown-item.logout { color: #ef4444; border-top: 1px solid #f1f5f9; }
+        .role-badge { font-size: 0.7rem; background: #e2e8f0; border-radius: 20px; padding: 0.2rem 0.6rem; margin-left: 8px; }
+        .page { display: none; max-width: 1280px; margin: 2rem auto; padding: 0 2rem; }
+        .page.active { display: block; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .nav-container { padding: 0.9rem 1rem; }
+        }
+        .hero { background: linear-gradient(120deg, #f1f5f9, #ffffff); padding: 3rem 2rem; border-radius: 32px; margin-bottom: 2rem; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .course-card { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #edf2f7; cursor: pointer; transition: 0.2s; }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1); }
+        .card-img { height: 140px; background: linear-gradient(145deg, #eef2ff, #e0e9ff); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .card-content { padding: 1.5rem; }
+        .card-title { font-weight: 800; font-size: 1.25rem; }
+        .module-card { background: white; border-radius: 24px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s; }
+        .module-card:hover { transform: translateX(5px); border-color: #3b82f6; }
+        .subgroup-card { background: #f8fafc; border-radius: 20px; padding: 1.2rem; margin-bottom: 1rem; border-left: 4px solid #3b82f6; cursor: pointer; transition: 0.2s; }
+        .subgroup-card:hover { background: #f1f5f9; transform: translateX(3px); }
+        .theory-block { background: #f1f5f9; border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; border-left: 5px solid #3b82f6; }
+        .task-card { background: white; border-radius: 24px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e2e8f0; transition: all 0.2s; }
+        .task-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .task-input { width: 100%; padding: 0.8rem; border-radius: 16px; border: 1px solid #cbd5e1; font-family: 'Courier New', monospace; margin: 1rem 0; font-size: 0.9rem; background: #fcfdff; }
+        .task-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        .task-input:disabled { background: #f1f5f9; color: #475569; cursor: not-allowed; }
+        .check-btn { background: #3b82f6; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; margin-right: 0.5rem; transition: 0.2s; }
+        .check-btn:hover:not(:disabled) { background: #2563eb; transform: scale(1.02); }
+        .check-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #94a3b8; }
+        .show-answer-btn { background: #64748b; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .show-answer-btn:hover { background: #475569; transform: translateY(-1px); }
+        .result-badge { margin-top: 0.8rem; padding: 0.5rem; border-radius: 12px; font-size: 0.9rem; }
+        .attempts-info { font-size: 0.8rem; color: #64748b; margin-top: 0.5rem; }
+        .progress-bar { background: #e2e8f0; border-radius: 20px; height: 12px; overflow: hidden; margin: 0.5rem 0; }
+        .progress-fill { background: #3b82f6; height: 100%; width: 0%; border-radius: 20px; transition: width 0.3s; }
+        .profile-header { background: white; border-radius: 32px; padding: 2rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin-bottom: 2rem; }
+        .avatar-large { width: 100px; height: 100px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; background-size: cover; background-position: center; cursor: pointer; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 12px 24px; border-radius: 60px; opacity: 0; transition: 0.2s; z-index: 1100; pointer-events: none; font-size: 0.9rem; max-width: 90%; text-align: center; }
+        .toast.show { opacity: 1; }
+        footer { text-align: center; padding: 2rem; color: #64748b; margin-top: 3rem; }
+        .back-btn { background: none; border: none; color: #3b82f6; cursor: pointer; margin-bottom: 1rem; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+        .expected-result { background: #eef2ff; border-radius: 12px; padding: 0.8rem; margin: 0.5rem 0; font-size: 0.9rem; border-left: 3px solid #3b82f6; white-space: pre-line; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; visibility: hidden; opacity: 0; transition: 0.2s; }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-content { background: white; max-width: 600px; width: 90%; border-radius: 32px; padding: 2rem; max-height: 80vh; overflow-y: auto; }
+        .modal-content pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 16px; overflow-x: auto; font-size: 0.85rem; }
+        .close-modal-btn { background: #3b82f6; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 40px; cursor: pointer; margin-top: 1rem; }
+        .variable-hint { background: #fef9c3; border-radius: 8px; padding: 0.5rem; margin: 0.5rem 0; font-size: 0.85rem; color: #854d0e; display: inline-block; }
+        .reset-subgroup-btn { background: #ef4444; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .reset-subgroup-btn:hover { background: #dc2626; transform: translateY(-1px); }
+        .next-subgroup-btn { background: #10b981; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .next-subgroup-btn:hover:not(:disabled) { background: #059669; transform: translateY(-1px); }
+        .next-subgroup-btn:disabled { background: #9ca3af; cursor: not-allowed; opacity: 0.6; }
+        .subgroup-action-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+        .sep-example { background: #e0e7ff; border-radius: 12px; padding: 0.6rem; margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; }
+        .delete-account-btn { background: #ef4444; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .danger-zone { border-top: 1px solid #fee2e2; margin-top: 1rem; padding-top: 1rem; }
+        .stats-table { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; }
+        .stats-table th, .stats-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        .stats-table th { background: #f1f5f9; font-weight: 600; }
+        .stats-table tr:hover { background: #f8fafc; }
+        .deleted-user { background: #fef2f2; color: #dc2626; text-decoration: line-through; }
+        .manage-buttons { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .btn-sm { padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-reset-progress { background: #f59e0b; color: white; }
+        .btn-delete-user { background: #ef4444; color: white; }
+        .text-muted { color: #64748b; font-size: 0.75rem; }
+        .radio-group { margin: 0.8rem 0; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .support-chat { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .support-btn { background: #3b82f6; color: white; border: none; border-radius: 60px; padding: 12px 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.2s; }
+        .support-btn:hover { background: #2563eb; transform: scale(1.02); }
+        .chat-modal { position: fixed; bottom: 90px; right: 20px; width: 350px; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 1001; display: none; flex-direction: column; max-height: 500px; overflow: hidden; }
+        .chat-modal.active { display: flex; }
+        .chat-header { background: #3b82f6; color: white; padding: 12px 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header button { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+        .chat-messages { flex: 1; padding: 12px; overflow-y: auto; max-height: 300px; min-height: 200px; background: #f9fafb; display: flex; flex-direction: column; gap: 8px; }
+        .chat-input-area { padding: 12px; border-top: 1px solid #e2e8f0; background: white; }
+        .chat-input-area textarea { width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #cbd5e1; font-family: inherit; resize: vertical; }
+        .file-attach { margin: 8px 0; display: flex; gap: 8px; align-items: center; }
+        .file-attach input { flex: 1; }
+        .send-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 40px; cursor: pointer; margin-top: 8px; width: 100%; }
+        .message { margin-bottom: 8px; padding: 8px 12px; border-radius: 12px; word-break: break-word; max-width: 85%; }
+        .message.user { background: #3b82f6; color: white; align-self: flex-end; }
+        .message.support { background: #e5e7eb; color: #1f2937; align-self: flex-start; }
+        .message small { display: block; font-size: 10px; opacity: 0.7; margin-top: 4px; }
+        .file-link { display: inline-block; background: #e2e8f0; padding: 4px 8px; border-radius: 8px; font-size: 12px; text-decoration: none; color: #1e40af; margin-top: 4px; }
+        .chat-item { padding: 12px; border-bottom: 1px solid #e2e8f0; cursor: pointer; }
+        .chat-item:hover { background: #f8fafc; }
+        .ticket-badge { background: #ef4444; color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; margin-left: 8px; }
+        .moderator-chat-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; max-width: 90%; background: white; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); z-index: 2000; display: none; flex-direction: column; max-height: 80vh; overflow: hidden; }
+        .moderator-chat-modal.active { display: flex; }
+        .moderator-chat-header { background: #1e293b; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .moderator-chat-messages { flex: 1; padding: 16px; overflow-y: auto; }
+        .moderator-chat-input { padding: 12px; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
+        .moderator-chat-input input { flex: 1; padding: 8px 12px; border-radius: 40px; border: 1px solid #cbd5e1; }
+        .delete-ticket-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 40px; cursor: pointer; margin-right: 8px; }
+        .delete-ticket-btn:hover { background: #dc2626; }
+        .group-card { background: white; border-radius: 20px; padding: 1.2rem; margin-bottom: 1rem; border: 1px solid #e2e8f0; }
+        .member-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .member-badge { background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .invite-link { background: #f1f5f9; padding: 8px; border-radius: 12px; font-family: monospace; font-size: 0.8rem; word-break: break-all; margin: 8px 0; }
+        .teacher-task-card { background: #f8fafc; border-radius: 16px; padding: 1rem; margin-top: 0.8rem; border-left: 3px solid #3b82f6; }
+        .task-checkbox-list { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; max-height: 300px; overflow-y: auto; }
+        .task-check { background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .task-check input { margin: 0; cursor: pointer; }
+        .role-change-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .role-icon-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; padding: 3px 8px; border-radius: 30px; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; }
+        .role-icon-btn.student { color: #3b82f6; background: #eff6ff; }
+        .role-icon-btn.teacher { color: #10b981; background: #d1fae5; }
+        .role-icon-btn.moderator { color: #8b5cf6; background: #ede9fe; }
+        .role-icon-btn.admin-assistant { color: #f59e0b; background: #fef3c7; }
+        .role-icon-btn:hover { transform: scale(1.02); filter: brightness(0.95); }
+        .access-code-field { margin-top: 0.5rem; }
+        .access-code-field input { width: 100%; padding: 0.5rem; border-radius: 12px; border: 1px solid #cbd5e1; margin-top: 0.25rem; }
+        .profile-action-buttons { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+        .edit-profile-btn { background: #8b5cf6; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .edit-profile-btn:hover { background: #7c3aed; transform: translateY(-1px); }
+        .change-avatar-btn { background: #10b981; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .change-avatar-btn:hover { background: #059669; transform: translateY(-1px); }
+        .profile-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 3000; visibility: hidden; opacity: 0; transition: 0.2s; }
+        .profile-modal.active { visibility: visible; opacity: 1; }
+        .profile-modal-content { background: white; max-width: 450px; width: 90%; border-radius: 32px; padding: 2rem; }
+        .profile-modal-content h3 { margin-bottom: 1.5rem; }
+        .profile-modal-content input { width: 100%; padding: 0.7rem; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 1rem; font-size: 0.9rem; }
+        .profile-modal-content input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        .profile-modal-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+        .profile-modal-buttons button { flex: 1; padding: 0.6rem; border-radius: 40px; cursor: pointer; font-weight: 600; border: none; transition: 0.2s; }
+        .save-profile-btn { background: #3b82f6; color: white; }
+        .save-profile-btn:hover { background: #2563eb; }
+        .cancel-profile-btn { background: #e2e8f0; color: #334155; }
+        .cancel-profile-btn:hover { background: #cbd5e1; }
+        .avatar-preview { text-align: center; margin-bottom: 1rem; }
+        .avatar-preview img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: linear-gradient(135deg, #3b82f6, #1e40af); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="nav-container">
+        <div class="logo"><i class="fas fa-graduation-cap"></i> Security</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        <div class="nav-links" id="navLinks">
+            <a onclick="navigateTo('home')">Главная</a>
+            <a onclick="navigateTo('courses')">Курсы</a>
+            <a onclick="navigateTo('profile')">Профиль</a>
+            <a id="teacherTasksBtn" onclick="navigateTo('teacherTasks')" style="display:none;">📚 Задания</a>
+            <a id="statsNavBtn" onclick="navigateTo('statistics')" style="display:none;">📊 Статистика</a>
+            <a id="chatsNavBtn" onclick="navigateTo('chats')" style="display:none;">💬 Чаты</a>
+        </div>
+        <div id="authArea"></div>
+    </div>
+</header>
+
+<!-- Боковое меню для мобильных устройств -->
+<div class="overlay" id="sidebarOverlay"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo"><i class="fas fa-graduation-cap"></i> Security</div>
+        <button class="close-sidebar" id="closeSidebarBtn">&times;</button>
+    </div>
+    <div class="sidebar-nav" id="sidebarNav">
+        <a onclick="navigateTo('home'); closeSidebar();"><i class="fas fa-home"></i> Главная</a>
+        <a onclick="navigateTo('courses'); closeSidebar();"><i class="fas fa-book"></i> Курсы</a>
+        <a onclick="navigateTo('profile'); closeSidebar();"><i class="fas fa-user"></i> Профиль</a>
+        <a id="sidebarTeacherTasks" onclick="navigateTo('teacherTasks'); closeSidebar();" style="display:none;"><i class="fas fa-tasks"></i> Задания</a>
+        <a id="sidebarStatsNav" onclick="navigateTo('statistics'); closeSidebar();" style="display:none;"><i class="fas fa-chart-line"></i> Статистика</a>
+        <a id="sidebarChatsNav" onclick="navigateTo('chats'); closeSidebar();" style="display:none;"><i class="fas fa-comments"></i> Чаты</a>
+        <a id="sidebarLogout" onclick="logout(); closeSidebar();" style="display:none;"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+    </div>
+</div>
+
+<div id="homePage" class="page"><div class="hero"><h1>Изучай Python <br>с AI-проверкой</h1><p>Интерактивный курс с проверкой кода и обратной связью</p><button class="btn-register" onclick="navigateTo('courses')">Начать обучение →</button><div style="margin-top:1.5rem;"><button class="btn-login" id="adminLoginFooterBtn" style="border-color:#8b5cf6; color:#8b5cf6;">👑 Вход как Администратор</button></div></div><h2>🔥 Наши курсы</h2><div class="courses-grid" id="homeCoursesGrid"></div></div>
+<div id="coursesPage" class="page"><h2>📚 Курсы</h2><div class="courses-grid" id="allCoursesGrid"></div></div>
+<div id="modulesPage" class="page"><button class="back-btn" onclick="navigateTo('courses')">← Назад</button><div style="background:white; border-radius:32px; padding:2rem;"><h1>🐍 Python для начинающих</h1><p>2 модуля, практические задания</p><div class="progress-bar"><div class="progress-fill" id="totalProgressFill"></div></div><p id="totalProgressText"></p></div><div id="modulesList"></div></div>
+<div id="module1Page" class="page"><button class="back-btn" onclick="goBackToModules()">← Ко всем модулям</button><div class="theory-block"><h2>Модуль 1: Ввод-вывод и арифметика</h2></div><div id="module1Subgroups"></div></div>
+<div id="subgroup1_1Page" class="page"><button class="back-btn" onclick="goBackToModule1()">← Назад</button><div class="theory-block"><h2>Подгруппа 1.1: Ввод-вывод (print и input)</h2><div class="sep-example">📌 print(10,20,30, sep='-') → "10-20-30"</div><pre>name = input("Как вас зовут? ")\nprint("Привет,", name)</pre></div><div id="subgroup1_1Tasks"></div><div class="subgroup-action-bar"><button id="resetSubgroupBtn1_1" class="reset-subgroup-btn">🗑️ Сбросить прогресс</button><button id="nextSubgroup1_1Btn" class="next-subgroup-btn" disabled>→ Следующая подгруппа</button></div></div>
+<div id="subgroup1_2Page" class="page"><button class="back-btn" onclick="goBackToModule1()">← Назад</button><div class="theory-block"><h2>Подгруппа 1.2: Арифметика (+, //, %)</h2><pre>a = 10; b = 3\nprint(a + b, a - b, a * b, a // b, a % b)</pre></div><div id="subgroup1_2Tasks"></div><div class="subgroup-action-bar"><button id="resetSubgroupBtn1_2" class="reset-subgroup-btn">🗑️ Сбросить прогресс</button><button id="nextSubgroup1_2Btn" class="next-subgroup-btn" disabled>→ Следующая подгруппа</button></div></div>
+<div id="module2Page" class="page"><button class="back-btn" onclick="goBackToModules()">← Ко всем модулям</button><div class="theory-block"><h2>Модуль 2: Условные операторы и типы данных</h2></div><div id="module2Subgroups"></div></div>
+<div id="subgroup2_1Page" class="page"><button class="back-btn" onclick="goBackToModule2()">← Назад</button><div class="theory-block"><h2>🎯 Условный оператор if-else и логические операторы (and, or, not)</h2><p><strong>if-else</strong> — позволяет выполнять разные блоки кода в зависимости от условия.</p><pre>if условие:\n    # выполняется, если условие True\nelse:\n    # выполняется, если условие False</pre><p><strong>Логические операторы:</strong></p><ul><li><code>and</code> — True если оба истинны</li><li><code>or</code> — True если хотя бы одно истинно</li><li><code>not</code> — инвертирует</li></ul><pre>if age >= 18 and has_ticket:\n    print("Проходите")</pre></div><div id="subgroup2_1Tasks"></div><div class="subgroup-action-bar"><button id="resetSubgroupBtn2_1" class="reset-subgroup-btn">🗑️ Сбросить прогресс</button><button id="nextSubgroup2_1Btn" class="next-subgroup-btn" disabled>→ Следующая подгруппа</button></div></div>
+<div id="subgroup2_2Page" class="page"><button class="back-btn" onclick="goBackToModule2()">← Назад</button><div class="theory-block"><h2>📊 Типы данных в Python</h2><p><strong>int</strong>, <strong>float</strong>, <strong>str</strong>, <strong>max(), min(), abs(), len(), math</strong></p><pre>import math\nprint(max(10,20,5))  # 20\nprint(abs(-7))       # 7\nprint(math.sqrt(25)) # 5.0</pre></div><div id="subgroup2_2Tasks"></div><div class="subgroup-action-bar"><button id="resetSubgroupBtn2_2" class="reset-subgroup-btn">🗑️ Сбросить прогресс</button><button id="nextSubgroup2_2Btn" class="next-subgroup-btn" disabled>→ Завершить модуль</button></div></div>
+<div id="profilePage" class="page">
+    <div class="profile-header">
+        <div class="avatar-large" id="profileAvatar" onclick="document.getElementById('avatarUpload').click()">👤</div>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+        <div>
+            <h2 id="profileName"></h2>
+            <div class="profile-action-buttons">
+                <button id="editProfileBtn" class="edit-profile-btn"><i class="fas fa-user-edit"></i> Изменить данные</button>
+                <button id="changeAvatarBtn" class="change-avatar-btn"><i class="fas fa-camera"></i> Сменить аватар</button>
+            </div>
+            <p><i class="fas fa-envelope"></i> <span id="profileEmail"></span></p>
+            <p><i class="fas fa-tag"></i> Роль: <span id="profileRole"></span></p>
+            <p><i class="fas fa-calendar"></i> Регистрация: <span id="regDate"></span></p>
+        </div>
+    </div>
+    <h3>📊 Результаты</h3>
+    <div style="background:white; border-radius:24px; padding:1.5rem;">
+        <div class="progress-bar"><div class="progress-fill" id="profileProgressFill"></div></div>
+        <p id="profilePoints"></p>
+        <div id="tasksStatus"></div>
+        <button class="btn-register" onclick="navigateTo('modules')">Продолжить</button>
+        <div class="danger-zone"><button id="deleteAccountBtn" class="delete-account-btn">Удалить аккаунт</button></div>
+    </div>
+</div>
+<div id="statisticsPage" class="page"><button class="back-btn" onclick="navigateTo('home')">← На главную</button><h2>📊 Статистика</h2><div style="background:white; border-radius:24px; padding:1.5rem;"><div style="display:flex; gap:1rem; margin-bottom:1rem;"><button id="showActiveUsersBtn" class="btn-register" style="background:#3b82f6;">Активные</button><button id="showDeletedUsersBtn" class="btn-register" style="background:#ef4444;">Удалённые</button></div><div id="statsContent"></div></div></div>
+<div id="chatsPage" class="page"><button class="back-btn" onclick="navigateTo('home')">← На главную</button><h2>💬 Чаты с пользователями</h2><div id="chatsList" style="background:white; border-radius:24px; padding:1rem;"></div></div>
+<div id="teacherTasksPage" class="page"><button class="back-btn" onclick="navigateTo('home')">← На главную</button><h2>📚 Управление группами и заданиями</h2><div style="margin-bottom: 1rem;"><button id="createGroupBtn" class="btn-register">➕ Создать группу</button></div><div id="teacherGroupsContainer"></div></div>
+
+<div id="toastMsg" class="toast"></div>
+<footer>© 2025 Security — учись программированию</footer>
+<div id="answerModal" class="modal-overlay"><div class="modal-content"><h3>Правильный ответ</h3><pre id="modalAnswerCode"></pre><button class="close-modal-btn" onclick="closeAnswerModal()">Закрыть</button></div></div>
+<div id="moderatorChatModal" class="moderator-chat-modal"><div class="moderator-chat-header"><span id="modChatTitle">Чат</span><div><button id="deleteTicketBtn" class="delete-ticket-btn">Удалить</button><button id="closeModChatBtn" style="background:none; border:none; color:white; font-size:24px;">&times;</button></div></div><div id="modChatMessages" class="moderator-chat-messages"></div><div class="moderator-chat-input"><input type="text" id="modReplyInput" placeholder="Ответ..."><button id="sendModReplyBtn" class="btn-sm" style="background:#3b82f6;">Отправить</button></div></div>
+
+<!-- Модальное окно изменения профиля -->
+<div id="editProfileModal" class="profile-modal">
+    <div class="profile-modal-content">
+        <h3><i class="fas fa-user-edit"></i> Редактирование профиля</h3>
+        <input type="text" id="editUsername" placeholder="Новый никнейм">
+        <input type="email" id="editEmail" placeholder="Новый Email">
+        <div class="profile-modal-buttons">
+            <button id="saveProfileBtn" class="save-profile-btn">Сохранить</button>
+            <button id="cancelProfileBtn" class="cancel-profile-btn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для смены аватара -->
+<div id="avatarModal" class="profile-modal">
+    <div class="profile-modal-content">
+        <h3><i class="fas fa-camera"></i> Сменить аватар</h3>
+        <div class="avatar-preview" id="avatarPreview">
+            <img id="previewImage" src="" alt="Предпросмотр">
+        </div>
+        <input type="file" id="avatarFileInput" accept="image/*">
+        <div class="profile-modal-buttons">
+            <button id="saveAvatarBtn" class="save-profile-btn">Сохранить</button>
+            <button id="cancelAvatarBtn" class="cancel-profile-btn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<!-- Чат поддержки (справа снизу) -->
+<div class="support-chat">
+    <button id="openChatBtn" class="support-btn"><i class="fas fa-headset"></i> Поддержка</button>
+    <div id="supportChatModal" class="chat-modal">
+        <div class="chat-header">
+            <span><i class="fas fa-comment-dots"></i> Чат с поддержкой</span>
+            <button id="closeChatBtn">&times;</button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-area">
+            <textarea id="chatMessageText" rows="2" placeholder="Ваше сообщение..."></textarea>
+            <div class="file-attach">
+                <input type="file" id="chatFileInput" accept="image/*,text/plain,application/pdf">
+                <label for="chatFileInput" style="font-size:12px; color:#64748b;">📎 Прикрепить файл</label>
+            </div>
+            <button id="sendChatBtn" class="send-btn">Отправить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ACCESS_CODES = { moderator: "moder", admin: "admin", admin_assistant: "help" };
+    let currentUser = null, usersDatabase = [], deletedUsersLog = [], taskAttempts = {};
+    let supportTickets = [], teacherGroups = [], teacherTasks = [], groupMemberships = [];
+    let currentOpenTicketId = null;
+    const ALL_TASK_IDS = ['g1_1t1','g1_1t2','g1_1t3','g1_2t1','g1_2t2','g1_2t3','g2_1t1','g2_1t2','g2_1t3','g2_2t1','g2_2t2','g2_2t3'];
+    const TASK_NAMES = {
+        'g1_1t1': 'Приветствие', 'g1_1t2': 'Вывод с разделителем', 'g1_1t3': 'Сбор данных',
+        'g1_2t1': 'Сложение', 'g1_2t2': 'Целочисленное деление', 'g1_2t3': 'Остаток',
+        'g2_1t1': 'Проверка возраста', 'g2_1t2': 'Выходной', 'g2_1t3': 'Инвертор',
+        'g2_2t1': 'Максимум/минимум/модуль', 'g2_2t2': 'Длина строки и upper', 'g2_2t3': 'math.sqrt и pi'
+    };
+    
+    const ROLE_HIERARCHY = ['student', 'teacher', 'moderator', 'admin_assistant', 'admin'];
+    const ROLE_NAMES = {
+        'student': '🎓 Ученик',
+        'teacher': '👨‍🏫 Учитель',
+        'moderator': '🛡️ Модератор',
+        'admin_assistant': '🤝 Админ-помощник',
+        'admin': '👑 Администратор'
+    };
+    
+    // Функции для бокового меню
+    function openSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); }
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
+    
+    function updateSidebarMenu() {
+        const sidebarTeacher = document.getElementById('sidebarTeacherTasks');
+        const sidebarStats = document.getElementById('sidebarStatsNav');
+        const sidebarChats = document.getElementById('sidebarChatsNav');
+        const sidebarLogout = document.getElementById('sidebarLogout');
+        
+        if(currentUser) {
+            sidebarLogout.style.display = 'flex';
+            if(currentUser.role === 'moderator' || currentUser.role === 'admin' || currentUser.role === 'admin_assistant') {
+                if(sidebarStats) sidebarStats.style.display = 'flex';
+                if(sidebarChats) sidebarChats.style.display = 'flex';
+                if(sidebarTeacher) sidebarTeacher.style.display = 'none';
+            } else if(currentUser.role === 'teacher') {
+                if(sidebarTeacher) sidebarTeacher.style.display = 'flex';
+                if(sidebarStats) sidebarStats.style.display = 'none';
+                if(sidebarChats) sidebarChats.style.display = 'none';
+            } else {
+                if(sidebarTeacher) sidebarTeacher.style.display = 'none';
+                if(sidebarStats) sidebarStats.style.display = 'none';
+                if(sidebarChats) sidebarChats.style.display = 'none';
+            }
+        } else {
+            sidebarLogout.style.display = 'none';
+            if(sidebarTeacher) sidebarTeacher.style.display = 'none';
+            if(sidebarStats) sidebarStats.style.display = 'none';
+            if(sidebarChats) sidebarChats.style.display = 'none';
+        }
+    }
+    
+    function loadTeacherData() { const g = localStorage.getItem('teacher_groups'); teacherGroups = g ? JSON.parse(g) : []; const t = localStorage.getItem('teacher_tasks'); teacherTasks = t ? JSON.parse(t) : []; const m = localStorage.getItem('group_memberships'); groupMemberships = m ? JSON.parse(m) : []; }
+    function saveTeacherData() { localStorage.setItem('teacher_groups', JSON.stringify(teacherGroups)); localStorage.setItem('teacher_tasks', JSON.stringify(teacherTasks)); localStorage.setItem('group_memberships', JSON.stringify(groupMemberships)); }
+    function loadSupportTickets() { const s = localStorage.getItem('support_tickets'); supportTickets = s ? JSON.parse(s) : []; }
+    function saveSupportTickets() { localStorage.setItem('support_tickets', JSON.stringify(supportTickets)); }
+    function loadUsersDatabase() { const s = localStorage.getItem('stepik_users_db'); usersDatabase = s ? JSON.parse(s) : []; const d = localStorage.getItem('stepik_deleted_users'); deletedUsersLog = d ? JSON.parse(d) : []; loadSupportTickets(); loadTeacherData(); }
+    function saveUsersDatabase() { localStorage.setItem('stepik_users_db', JSON.stringify(usersDatabase)); localStorage.setItem('stepik_deleted_users', JSON.stringify(deletedUsersLog)); saveSupportTickets(); saveTeacherData(); }
+    function findUserByUsername(u) { return usersDatabase.find(x => x.username.toLowerCase() === u.toLowerCase()); }
+    function findUserByEmail(e) { return usersDatabase.find(u => u.email.toLowerCase() === e.toLowerCase()); }
+    
+    function registerUser(username, email, password, role, accessCode = null) {
+        if(findUserByUsername(username)) return { success: false, message: 'Имя занято!' };
+        if(findUserByEmail(email)) return { success: false, message: 'Email используется!' };
+        if ((role === 'moderator' && accessCode !== ACCESS_CODES.moderator) || 
+            (role === 'admin' && accessCode !== ACCESS_CODES.admin) ||
+            (role === 'admin_assistant' && accessCode !== ACCESS_CODES.admin_assistant)) return { success: false, message: 'Неверный код доступа!' };
+        const newUser = { id: Date.now(), username, email, password, role, registeredDate: new Date().toLocaleString('ru-RU'), avatar: null, taskProgress: {}, taskAttempts: {} };
+        ALL_TASK_IDS.forEach(id => { newUser.taskProgress[id] = false; });
+        usersDatabase.push(newUser); saveUsersDatabase(); return { success: true, user: newUser };
+    }
+    function loginUser(login, password, role) {
+        let user = findUserByEmail(login); if(!user) user = findUserByUsername(login);
+        if(!user) return { success: false, message: 'Пользователь не найден!' };
+        if(user.password !== password) return { success: false, message: 'Неверный пароль!' };
+        if(user.role !== role) return { success: false, message: `Вы зарегистрированы как ${user.role}.` };
+        return { success: true, user };
+    }
+    let taskProgress = {};
+    function loadCurrentUserProgress() { if(currentUser && currentUser.taskProgress) taskProgress = { ...currentUser.taskProgress }; else taskProgress = {}; if(currentUser && currentUser.taskAttempts) taskAttempts = { ...currentUser.taskAttempts }; else taskAttempts = {}; }
+    function saveCurrentUserProgress() { if(currentUser) { const idx = usersDatabase.findIndex(u => u.id === currentUser.id); if(idx !== -1) { usersDatabase[idx].taskProgress = { ...taskProgress }; usersDatabase[idx].taskAttempts = { ...taskAttempts }; currentUser.taskProgress = { ...taskProgress }; currentUser.taskAttempts = { ...taskAttempts }; saveUsersDatabase(); } } }
+    function setCurrentUser(user) { currentUser = user; if(currentUser) { taskProgress = currentUser.taskProgress || {}; taskAttempts = currentUser.taskAttempts || {}; } else { taskProgress = {}; taskAttempts = {}; } localStorage.setItem('stepik_current_user', currentUser ? JSON.stringify({ id: currentUser.id }) : ''); renderAuthUI(); updateNavForRole(); updateSidebarMenu(); renderChatsList(); renderTeacherUI(); }
+    function loadCurrentSession() { const stored = localStorage.getItem('stepik_current_user'); if(stored) { try { const { id } = JSON.parse(stored); const user = usersDatabase.find(u => u.id === id); if(user) { currentUser = user; taskProgress = user.taskProgress || {}; taskAttempts = user.taskAttempts || {}; } } catch(e) {} } renderAuthUI(); updateNavForRole(); updateSidebarMenu(); renderTeacherUI(); }
+    function logout() { currentUser = null; localStorage.removeItem('stepik_current_user'); renderAuthUI(); updateNavForRole(); updateSidebarMenu(); navigateTo('home'); showToast('Вы вышли', false); closeSidebar(); }
+    function deleteAccount() { if(!currentUser) return; if(confirm('Удалить аккаунт?')) { const idx = usersDatabase.findIndex(u => u.id === currentUser.id); if(idx !== -1) { deletedUsersLog.push({ ...usersDatabase[idx], deletedAt: new Date().toLocaleString() }); usersDatabase.splice(idx, 1); saveUsersDatabase(); currentUser = null; localStorage.removeItem('stepik_current_user'); renderAuthUI(); updateNavForRole(); updateSidebarMenu(); navigateTo('home'); showToast('Аккаунт удалён', true); } } }
+    function showToast(msg, ok = true) { const t = document.getElementById('toastMsg'); t.innerText = msg; t.style.background = ok ? 'rgba(34,197,94,0.9)' : 'rgba(239,68,68,0.9)'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+    function updateNavForRole() { 
+        const stats = document.getElementById('statsNavBtn'); const chats = document.getElementById('chatsNavBtn'); const teacherBtn = document.getElementById('teacherTasksBtn');
+        if(currentUser && (currentUser.role === 'moderator' || currentUser.role === 'admin' || currentUser.role === 'admin_assistant')) { 
+            if(stats) stats.style.display = 'inline-block'; 
+            if(chats) chats.style.display = 'inline-block'; 
+            if(teacherBtn) teacherBtn.style.display = 'none'; 
+        }
+        else if(currentUser && currentUser.role === 'teacher') { if(teacherBtn) teacherBtn.style.display = 'inline-block'; if(stats) stats.style.display = 'none'; if(chats) chats.style.display = 'none'; }
+        else { if(teacherBtn) teacherBtn.style.display = 'none'; if(stats) stats.style.display = 'none'; if(chats) chats.style.display = 'none'; }
+        updateSidebarMenu();
+    }
+    
+    function updateAvatar(file) { 
+        if(file && currentUser) { 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                currentUser.avatar = e.target.result; 
+                const idx = usersDatabase.findIndex(u => u.id === currentUser.id); 
+                if(idx !== -1) usersDatabase[idx].avatar = e.target.result; 
+                saveUsersDatabase(); 
+                updateProfileUI(); 
+                renderAuthUI(); 
+                showToast('Аватар обновлён', true); 
+            }; 
+            reader.readAsDataURL(file); 
+        } 
+    }
+    
+    function renderTeacherUI() { if(!currentUser || currentUser.role !== 'teacher') return; const container = document.getElementById('teacherGroupsContainer'); if(!container) return; const myGroups = teacherGroups.filter(g => g.teacherId === currentUser.id); if(myGroups.length === 0) { container.innerHTML = '<p>У вас пока нет групп. Нажмите "Создать группу"</p>'; return; }
+    container.innerHTML = myGroups.map(group => { const members = groupMemberships.filter(m => m.groupId === group.id).map(m => usersDatabase.find(u => u.id === m.userId)).filter(u => u); const tasks = teacherTasks.filter(t => t.groupId === group.id); return `<div class="group-card"><div><strong>📁 ${group.name}</strong> <span style="font-size:0.8rem; color:#64748b;">Код: ${group.inviteCode}</span></div><div class="invite-link">🔗 Ссылка-приглашение: <span style="user-select:all;">${window.location.origin}${window.location.pathname}#invite=${group.inviteCode}</span></div><div><strong>👥 Участники (${members.length}):</strong><div class="member-list">${members.map(m => `<span class="member-badge">${m.username}</span>`).join('') || '<span class="text-muted">Нет участников</span>'}</div></div><div><strong>📋 Задания:</strong>${tasks.length ? tasks.map(t => `<div class="teacher-task-card"><b>${t.title}</b><p>${t.description}</p><div>Статус: ${members.filter(m => m.taskProgress && m.taskProgress[t.taskId]).length}/${members.length} выполнили</div></div>`).join('') : '<div class="text-muted">Нет заданий</div>'}</div><button class="btn-sm btn-reset-progress" onclick="addTaskToGroup('${group.id}')">➕ Добавить задание</button> <button class="btn-sm btn-delete-user" onclick="deleteGroup('${group.id}')">🗑️ Удалить группу</button></div>`; }).join(''); }
+    function createGroup() { const name = prompt('Название группы:'); if(!name) return; const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase(); teacherGroups.push({ id: Date.now(), name, inviteCode, teacherId: currentUser.id }); saveTeacherData(); renderTeacherUI(); showToast('Группа создана', true); }
+    function deleteGroup(groupId) { if(confirm('Удалить группу? Все задания также будут удалены.')) { teacherGroups = teacherGroups.filter(g => g.id != groupId); teacherTasks = teacherTasks.filter(t => t.groupId != groupId); groupMemberships = groupMemberships.filter(m => m.groupId != groupId); saveTeacherData(); renderTeacherUI(); showToast('Группа удалена', true); } }
+    function addTaskToGroup(groupId) { const title = prompt('Название задания:'); if(!title) return; const description = prompt('Описание задания (что нужно сделать):'); if(!description) return; const taskId = Date.now().toString(); teacherTasks.push({ id: taskId, groupId, title, description, taskId: taskId }); saveTeacherData(); renderTeacherUI(); showToast('Задание добавлено', true); }
+    function joinGroupByCode(code) { if(!currentUser) { showToast('Сначала войдите', false); return; } const group = teacherGroups.find(g => g.inviteCode === code); if(!group) { showToast('Неверный код приглашения', false); return; } if(groupMemberships.some(m => m.groupId === group.id && m.userId === currentUser.id)) { showToast('Вы уже в этой группе', false); return; } groupMemberships.push({ groupId: group.id, userId: currentUser.id }); saveTeacherData(); showToast(`Вы присоединились к группе ${group.name}`, true); renderTeacherUI(); }
+    function checkInviteOnLoad() { if(window.location.hash && window.location.hash.startsWith('#invite=')) { const code = window.location.hash.substring(8); joinGroupByCode(code); window.location.hash = ''; } }
+    
+    function goBackToModules() { navigateTo('modules'); } function goBackToModule1() { navigateTo('module1'); } function goBackToModule2() { navigateTo('module2'); }
+    function updateNextButton(key) { setTimeout(() => { let all = false; if(key === '1_1') all = taskProgress.g1_1t1 && taskProgress.g1_1t2 && taskProgress.g1_1t3; else if(key === '1_2') all = taskProgress.g1_2t1 && taskProgress.g1_2t2 && taskProgress.g1_2t3; else if(key === '2_1') all = taskProgress.g2_1t1 && taskProgress.g2_1t2 && taskProgress.g2_1t3; else if(key === '2_2') all = taskProgress.g2_2t1 && taskProgress.g2_2t2 && taskProgress.g2_2t3; const btn = document.getElementById(`nextSubgroup${key}Btn`); if(btn) btn.disabled = !all; }, 30); }
+    function goToNextSubgroup(key) { if(key === '1_1') navigateTo('subgroup1_2'); else if(key === '1_2') navigateTo('module2'); else if(key === '2_1') navigateTo('subgroup2_2'); else if(key === '2_2') navigateTo('modules'); }
+    function renderModulesPage() { let m1 = [taskProgress.g1_1t1,taskProgress.g1_1t2,taskProgress.g1_1t3,taskProgress.g1_2t1,taskProgress.g1_2t2,taskProgress.g1_2t3].filter(v=>v).length; let m2 = [taskProgress.g2_1t1,taskProgress.g2_1t2,taskProgress.g2_1t3,taskProgress.g2_2t1,taskProgress.g2_2t2,taskProgress.g2_2t3].filter(v=>v).length; document.getElementById('modulesList').innerHTML = `<div class="module-card" onclick="navigateTo('module1')"><div><h3>Модуль 1</h3><span>${m1}/6</span><div class="progress-bar"><div class="progress-fill" style="width:${(m1/6)*100}%"></div></div></div></div><div class="module-card" onclick="navigateTo('module2')"><div><h3>Модуль 2</h3><span>${m2}/6</span><div class="progress-bar"><div class="progress-fill" style="width:${(m2/6)*100}%"></div></div></div></div>`; document.getElementById('totalProgressFill').style.width = `${((m1+m2)/12)*100}%`; document.getElementById('totalProgressText').innerText = `Прогресс: ${m1+m2}/12`; }
+    function renderModule1Subgroups() { document.getElementById('module1Subgroups').innerHTML = `<div class="subgroup-card" onclick="navigateTo('subgroup1_1')">📖 Подгруппа 1.1: Ввод-вывод</div><div class="subgroup-card" onclick="navigateTo('subgroup1_2')">🧮 Подгруппа 1.2: Арифметика</div>`; }
+    function renderModule2Subgroups() { document.getElementById('module2Subgroups').innerHTML = `<div class="subgroup-card" onclick="navigateTo('subgroup2_1')">🔀 Подгруппа 2.1: if-else, and, or, not</div><div class="subgroup-card" onclick="navigateTo('subgroup2_2')">📊 Подгруппа 2.2: Типы данных</div>`; }
+    function normalizeCode(code) { return code.replace(/\s+/g, ' ').trim(); }
+    function checkTask1ExactMatch(code) { return normalizeCode(code) === "name = input() print('Привет,', name)"; }
+    function checkTask2ExactMatch(code) { return normalizeCode(code) === "print(10, 20, 30, sep='-')"; }
+    function checkTask3ExactMatch(code) { return normalizeCode(code) === "name = input() age = input() print('Вас зовут', name, ', вам', age, 'лет')"; }
+    async function checkWithAI_1_1(taskId, taskIndex) { if(!currentUser) return; let a = taskAttempts[taskId] || { attempts:0, failed:false }; if(a.failed) { showToast('Попытки закончились', false); return; } if(taskProgress[taskId]) return; let code = document.getElementById(`code_${taskId}`).value; let ok = false; if(taskIndex===0) ok = checkTask1ExactMatch(code); else if(taskIndex===1) ok = checkTask2ExactMatch(code); else if(taskIndex===2) ok = checkTask3ExactMatch(code); if(ok) { taskProgress[taskId]=true; saveCurrentUserProgress(); showToast('✅ Выполнено!', true); renderSubgroup1_1Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('1_1'); } else { let newA = (a.attempts||0)+1; taskAttempts[taskId]={attempts:newA, failed:newA>=4, correctAnswer:a.correctAnswer}; saveCurrentUserProgress(); showToast(`❌ Неверно. Осталось: ${4-newA}`, false); renderSubgroup1_1Tasks(); } }
+    function checkTask1_2_1ExactMatch(code) { return normalizeCode(code) === "a = 5 b = 3 c = a + b print('Результат:', c)"; }
+    function checkTask1_2_2ExactMatch(code) { return normalizeCode(code) === "a = 10 b = 3 c = a // b print('Целочисленное деление:', c)"; }
+    function checkTask1_2_3ExactMatch(code) { return normalizeCode(code) === "a = 10 b = 3 c = a % b print('Остаток от деления:', c)"; }
+    async function checkTaskWithAI_1_2(taskId, taskIndex) { if(!currentUser) return; let a = taskAttempts[taskId] || { attempts:0, failed:false }; if(a.failed) { showToast('Попытки закончились', false); return; } if(taskProgress[taskId]) return; let code = document.getElementById(`code_${taskId}`).value; let ok = false; if(taskIndex===0) ok = checkTask1_2_1ExactMatch(code); else if(taskIndex===1) ok = checkTask1_2_2ExactMatch(code); else if(taskIndex===2) ok = checkTask1_2_3ExactMatch(code); if(ok) { taskProgress[taskId]=true; saveCurrentUserProgress(); showToast('✅ Выполнено!', true); renderSubgroup1_2Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('1_2'); } else { let newA = (a.attempts||0)+1; taskAttempts[taskId]={attempts:newA, failed:newA>=4, correctAnswer:a.correctAnswer}; saveCurrentUserProgress(); showToast(`❌ Неверно. Осталось: ${4-newA}`, false); renderSubgroup1_2Tasks(); } }
+    function check2_1_1Match(code) { return normalizeCode(code) === "age = int(input()) if age >= 18 and age <= 65: print('Рабочий возраст') else: print('Не рабочий возраст')"; }
+    function check2_1_2Match(code) { return normalizeCode(code) === "day = input() if day == 'Saturday' or day == 'Sunday': print('Выходной') else: print('Будний день')"; }
+    function check2_1_3Match(code) { return normalizeCode(code) === "is_weekend = input() is_weekend = is_weekend == 'True' if not is_weekend: print('Рабочий день') else: print('Выходной')"; }
+    async function checkTask2_1(taskId, taskIndex) { if(!currentUser) return; let a = taskAttempts[taskId] || { attempts:0, failed:false }; if(a.failed) { showToast('Попытки закончились', false); return; } if(taskProgress[taskId]) return; let code = document.getElementById(`code_${taskId}`).value; let ok = false; if(taskIndex===0) ok = check2_1_1Match(code); else if(taskIndex===1) ok = check2_1_2Match(code); else if(taskIndex===2) ok = check2_1_3Match(code); if(ok) { taskProgress[taskId]=true; saveCurrentUserProgress(); showToast('✅ Выполнено!', true); renderSubgroup2_1Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('2_1'); } else { let newA = (a.attempts||0)+1; let failed = newA >= 4; taskAttempts[taskId]={attempts:newA, failed:failed, correctAnswer:a.correctAnswer}; saveCurrentUserProgress(); showToast(`❌ Неверно. Осталось: ${4-newA}`, false); renderSubgroup2_1Tasks(); } }
+    function check2_2_1Match(code) { return normalizeCode(code) === "a = int(input()) b = int(input()) c = int(input()) print(max(a,b,c)) print(min(a,b,c)) print(abs(a)) print(abs(b)) print(abs(c))"; }
+    function check2_2_2Match(code) { return normalizeCode(code) === "s = input() print(len(s)) print(s.upper())"; }
+    function check2_2_3Match(code) { return normalizeCode(code) === "import math x = float(input()) print(math.sqrt(x)) print(math.pi)"; }
+    async function checkTask2_2(taskId, taskIndex) { if(!currentUser) return; let a = taskAttempts[taskId] || { attempts:0, failed:false }; if(a.failed) { showToast('Попытки закончились', false); return; } if(taskProgress[taskId]) return; let code = document.getElementById(`code_${taskId}`).value; let ok = false; if(taskIndex===0) ok = check2_2_1Match(code); else if(taskIndex===1) ok = check2_2_2Match(code); else if(taskIndex===2) ok = check2_2_3Match(code); if(ok) { taskProgress[taskId]=true; saveCurrentUserProgress(); showToast('✅ Выполнено!', true); renderSubgroup2_2Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('2_2'); } else { let newA = (a.attempts||0)+1; let failed = newA >= 4; taskAttempts[taskId]={attempts:newA, failed:failed, correctAnswer:a.correctAnswer}; saveCurrentUserProgress(); showToast(`❌ Неверно. Осталось: ${4-newA}`, false); renderSubgroup2_2Tasks(); } }
+    function showAnswerForTask(taskId) { let ans = taskAttempts[taskId]?.correctAnswer || "Ответ не найден"; document.getElementById('modalAnswerCode').innerText = ans; document.getElementById('answerModal').classList.add('active'); }
+    function closeAnswerModal() { document.getElementById('answerModal').classList.remove('active'); }
+    function resetSubgroupProgress1_1() { if(!currentUser) return; taskProgress.g1_1t1=false; taskProgress.g1_1t2=false; taskProgress.g1_1t3=false; saveCurrentUserProgress(); renderSubgroup1_1Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('1_1'); showToast('Прогресс сброшен', true); }
+    function resetSubgroupProgress1_2() { if(!currentUser) return; taskProgress.g1_2t1=false; taskProgress.g1_2t2=false; taskProgress.g1_2t3=false; saveCurrentUserProgress(); renderSubgroup1_2Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('1_2'); showToast('Прогресс сброшен', true); }
+    function resetSubgroupProgress2_1() { if(!currentUser) return; taskProgress.g2_1t1=false; taskProgress.g2_1t2=false; taskProgress.g2_1t3=false; if(taskAttempts.g2_1t1) { taskAttempts.g2_1t1.attempts=0; taskAttempts.g2_1t1.failed=false; } if(taskAttempts.g2_1t2) { taskAttempts.g2_1t2.attempts=0; taskAttempts.g2_1t2.failed=false; } if(taskAttempts.g2_1t3) { taskAttempts.g2_1t3.attempts=0; taskAttempts.g2_1t3.failed=false; } saveCurrentUserProgress(); renderSubgroup2_1Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('2_1'); showToast('Прогресс сброшен', true); }
+    function resetSubgroupProgress2_2() { if(!currentUser) return; taskProgress.g2_2t1=false; taskProgress.g2_2t2=false; taskProgress.g2_2t3=false; if(taskAttempts.g2_2t1) { taskAttempts.g2_2t1.attempts=0; taskAttempts.g2_2t1.failed=false; } if(taskAttempts.g2_2t2) { taskAttempts.g2_2t2.attempts=0; taskAttempts.g2_2t2.failed=false; } if(taskAttempts.g2_2t3) { taskAttempts.g2_2t3.attempts=0; taskAttempts.g2_2t3.failed=false; } saveCurrentUserProgress(); renderSubgroup2_2Tasks(); renderModulesPage(); updateProfileUI(); updateNextButton('2_2'); showToast('Прогресс сброшен', true); }
+    function renderSubgroup1_1Tasks() { const container = document.getElementById('subgroup1_1Tasks'); if(!container) return; const tasks = [ { title: "Приветствие", desc: "Запросить имя и вывести 'Привет, [имя]!'", variables: "name", expectedDisplay: "Ваше имя?\nПривет, Ирина", taskIndex:0, id:'g1_1t1', hint:"name=input()\nprint('Привет,', name)" }, { title: "Вывод с разделителем", desc: "Вывести 10,20,30 через дефис", variables: "без переменных", expectedDisplay:"10-20-30", taskIndex:1, id:'g1_1t2', hint:"print(10,20,30,sep='-')" }, { title: "Сбор данных", desc: "Запросить имя и возраст, вывести фразу", variables: "name, age", expectedDisplay:"Вас зовут name, вам age лет", taskIndex:2, id:'g1_1t3', hint:"name=input()\nage=input()\nprint('Вас зовут',name,', вам',age,'лет')" } ]; container.innerHTML = ''; tasks.forEach(t => { const done = taskProgress[t.id]; const att = taskAttempts[t.id] || { attempts:0, failed:false }; const failed = att.failed && !done; const saved = (currentUser && localStorage.getItem(`temp_code_${t.id}_${currentUser.id}`)) || ""; container.innerHTML += `<div class="task-card"><div class="task-badge">Задание ${t.taskIndex+1}</div><h3>${t.title}</h3><p>${t.desc}</p><div class="variable-hint">📌 Переменные: ${t.variables}</div><div class="expected-result">🎯 ${t.expectedDisplay}</div><div class="attempts-info">💡 Попыток: ${!done && !failed ? (4 - (att.attempts||0)) : (done ? 'Выполнено' : 'Попытки кончились')}</div><textarea class="task-input" id="code_${t.id}" rows="4" placeholder="Код..." ${done ? 'disabled' : ''}>${saved}</textarea><div><button class="check-btn" onclick="checkWithAI_1_1('${t.id}',${t.taskIndex})" ${done || failed ? 'disabled' : ''}>Проверить</button>${failed ? `<button class="show-answer-btn" onclick="showAnswerForTask('${t.id}')">Ответ</button>` : ''}</div><div class="result-badge">${done ? '✅ Выполнено' : (failed ? '❌ Не засчитано' : '')}</div></div>`; const ta = document.getElementById(`code_${t.id}`); if(ta && !done && !failed) ta.addEventListener('input', function() { if(currentUser) localStorage.setItem(`temp_code_${t.id}_${currentUser.id}`, this.value); }); }); }
+    function renderSubgroup1_2Tasks() { const container = document.getElementById('subgroup1_2Tasks'); if(!container) return; const tasks = [ { title:"Сложение", desc:"a=5,b=3, вывести результат", variables:"a,b,c", expectedDisplay:"Результат: 8", taskIndex:0, id:'g1_2t1', hint:"a=5\nb=3\nc=a+b\nprint('Результат:',c)" }, { title:"Целочисленное деление", desc:"a=10,b=3, вывести a//b", variables:"a,b,c", expectedDisplay:"Целочисленное деление: 3", taskIndex:1, id:'g1_2t2', hint:"a=10\nb=3\nc=a//b\nprint('Целочисленное деление:',c)" }, { title:"Остаток", desc:"a=10,b=3, вывести a%b", variables:"a,b,c", expectedDisplay:"Остаток от деления: 1", taskIndex:2, id:'g1_2t3', hint:"a=10\nb=3\nc=a%b\nprint('Остаток от деления:',c)" } ]; container.innerHTML = ''; tasks.forEach(t => { const done = taskProgress[t.id]; const att = taskAttempts[t.id] || { attempts:0, failed:false }; const failed = att.failed && !done; const saved = (currentUser && localStorage.getItem(`temp_code_${t.id}_${currentUser.id}`)) || ""; container.innerHTML += `<div class="task-card"><div class="task-badge">Задание ${t.taskIndex+1}</div><h3>${t.title}</h3><p>${t.desc}</p><div class="variable-hint">📌 ${t.variables}</div><div class="expected-result">🎯 ${t.expectedDisplay}</div><div class="attempts-info">💡 Попыток: ${!done && !failed ? (4 - (att.attempts||0)) : (done ? 'Выполнено' : 'Попытки кончились')}</div><textarea class="task-input" id="code_${t.id}" rows="4" placeholder="Код..." ${done ? 'disabled' : ''}>${saved}</textarea><div><button class="check-btn" onclick="checkTaskWithAI_1_2('${t.id}',${t.taskIndex})" ${done || failed ? 'disabled' : ''}>Проверить</button>${failed ? `<button class="show-answer-btn" onclick="showAnswerForTask('${t.id}')">Ответ</button>` : ''}</div><div class="result-badge">${done ? '✅ Выполнено' : (failed ? '❌ Не засчитано' : '')}</div></div>`; const ta = document.getElementById(`code_${t.id}`); if(ta && !done && !failed) ta.addEventListener('input', function() { if(currentUser) localStorage.setItem(`temp_code_${t.id}_${currentUser.id}`, this.value); }); }); }
+    function renderSubgroup2_1Tasks() { const container = document.getElementById('subgroup2_1Tasks'); if(!container) return; const tasks = [ { title:"Проверка возраста (and)", desc:"18-65 -> 'Рабочий возраст'", variables:"age", expectedDisplay:"Рабочий возраст", taskIndex:0, id:'g2_1t1', hint:"age=int(input())\nif age>=18 and age<=65:\n    print('Рабочий возраст')\nelse:\n    print('Не рабочий возраст')" }, { title:"Выходной (or)", desc:"Saturday/Sunday -> Выходной", variables:"day", expectedDisplay:"Выходной", taskIndex:1, id:'g2_1t2', hint:"day=input()\nif day=='Saturday' or day=='Sunday':\n    print('Выходной')\nelse:\n    print('Будний день')" }, { title:"Инвертор (not)", desc:"not is_weekend -> Рабочий день", variables:"is_weekend", expectedDisplay:"Рабочий день", taskIndex:2, id:'g2_1t3', hint:"is_weekend=input()\nis_weekend=is_weekend=='True'\nif not is_weekend:\n    print('Рабочий день')\nelse:\n    print('Выходной')" } ]; container.innerHTML = ''; tasks.forEach(t => { const done = taskProgress[t.id]; const att = taskAttempts[t.id] || { attempts:0, failed:false }; const failed = att.failed && !done; const saved = (currentUser && localStorage.getItem(`temp_code_${t.id}_${currentUser.id}`)) || ""; const isDisabled = done || failed; container.innerHTML += `<div class="task-card"><div class="task-badge">Задание ${t.taskIndex+1}</div><h3>${t.title}</h3><p>${t.desc}</p><div class="variable-hint">📌 ${t.variables}</div><div class="expected-result">🎯 ${t.expectedDisplay}</div><div class="attempts-info">💡 Попыток: ${!done && !failed ? (4 - (att.attempts||0)) : (done ? 'Выполнено' : 'Попытки кончились')}</div><textarea class="task-input" id="code_${t.id}" rows="5" placeholder="Код..." ${isDisabled ? 'disabled' : ''}>${saved}</textarea><div><button class="check-btn" onclick="checkTask2_1('${t.id}',${t.taskIndex})" ${isDisabled ? 'disabled' : ''}>Проверить</button>${failed ? `<button class="show-answer-btn" onclick="showAnswerForTask('${t.id}')">Ответ</button>` : ''}</div><div class="result-badge">${done ? '✅ Выполнено' : (failed ? '❌ Не засчитано' : '')}</div></div>`; const ta = document.getElementById(`code_${t.id}`); if(ta && !done && !failed) ta.addEventListener('input', function() { if(currentUser) localStorage.setItem(`temp_code_${t.id}_${currentUser.id}`, this.value); }); }); }
+    function renderSubgroup2_2Tasks() { const container = document.getElementById('subgroup2_2Tasks'); if(!container) return; const tasks = [ { title:"Максимум/минимум/модуль", desc:"3 числа -> max, min, abs каждого", variables:"a,b,c", expectedDisplay:"20\n5\n10\n5\n10", taskIndex:0, id:'g2_2t1', hint:"a=int(input())\nb=int(input())\nc=int(input())\nprint(max(a,b,c))\nprint(min(a,b,c))\nprint(abs(a))\nprint(abs(b))\nprint(abs(c))" }, { title:"Длина строки и upper", desc:"строка -> len и upper", variables:"s", expectedDisplay:"5\nHELLO", taskIndex:1, id:'g2_2t2', hint:"s=input()\nprint(len(s))\nprint(s.upper())" }, { title:"math.sqrt и pi", desc:"число -> корень и pi", variables:"x", expectedDisplay:"4.0\n3.141592653589793", taskIndex:2, id:'g2_2t3', hint:"import math\nx=float(input())\nprint(math.sqrt(x))\nprint(math.pi)" } ]; container.innerHTML = ''; tasks.forEach(t => { const done = taskProgress[t.id]; const att = taskAttempts[t.id] || { attempts:0, failed:false }; const failed = att.failed && !done; const saved = (currentUser && localStorage.getItem(`temp_code_${t.id}_${currentUser.id}`)) || ""; const isDisabled = done || failed; container.innerHTML += `<div class="task-card"><div class="task-badge">Задание ${t.taskIndex+1}</div><h3>${t.title}</h3><p>${t.desc}</p><div class="variable-hint">📌 ${t.variables}</div><div class="expected-result">🎯 ${t.expectedDisplay}</div><div class="attempts-info">💡 Попыток: ${!done && !failed ? (4 - (att.attempts||0)) : (done ? 'Выполнено' : 'Попытки кончились')}</div><textarea class="task-input" id="code_${t.id}" rows="6" placeholder="Код..." ${isDisabled ? 'disabled' : ''}>${saved}</textarea><div><button class="check-btn" onclick="checkTask2_2('${t.id}',${t.taskIndex})" ${isDisabled ? 'disabled' : ''}>Проверить</button>${failed ? `<button class="show-answer-btn" onclick="showAnswerForTask('${t.id}')">Ответ</button>` : ''}</div><div class="result-badge">${done ? '✅ Выполнено' : (failed ? '❌ Не засчитано' : '')}</div></div>`; const ta = document.getElementById(`code_${t.id}`); if(ta && !done && !failed) ta.addEventListener('input', function() { if(currentUser) localStorage.setItem(`temp_code_${t.id}_${currentUser.id}`, this.value); }); }); }
+    function updateProfileUI() { if(!currentUser) return; document.getElementById('profileName').innerText = currentUser.username; document.getElementById('profileEmail').innerText = currentUser.email; document.getElementById('regDate').innerText = currentUser.registeredDate || '—'; const avatarEl = document.getElementById('profileAvatar'); if(currentUser.avatar) avatarEl.style.backgroundImage = `url(${currentUser.avatar})`; else { avatarEl.style.backgroundImage = ''; avatarEl.innerText = currentUser.username.charAt(0).toUpperCase(); } let roleDisplay = currentUser.role === 'student' ? 'Ученик' : (currentUser.role === 'teacher' ? 'Учитель' : (currentUser.role === 'admin' ? 'Администратор' : (currentUser.role === 'admin_assistant' ? 'Администратор-помощник' : 'Модератор'))); document.getElementById('profileRole').innerText = roleDisplay; let comp = Object.values(taskProgress).filter(v=>v).length; document.getElementById('profileProgressFill').style.width = `${(comp/12)*100}%`; document.getElementById('profilePoints').innerHTML = `✅ Решено: ${comp}/12`; document.getElementById('tasksStatus').innerHTML = `<p>Модуль 1: ${[taskProgress.g1_1t1,taskProgress.g1_1t2,taskProgress.g1_1t3,taskProgress.g1_2t1,taskProgress.g1_2t2,taskProgress.g1_2t3].filter(v=>v).length}/6</p><p>Модуль 2: ${[taskProgress.g2_1t1,taskProgress.g2_1t2,taskProgress.g2_1t3,taskProgress.g2_2t1,taskProgress.g2_2t2,taskProgress.g2_2t3].filter(v=>v).length}/6</p>`; }
+    function renderAuthUI() { const area = document.getElementById('authArea'); if(currentUser) { let icon = currentUser.role === 'student' ? '🎓' : (currentUser.role === 'teacher' ? '👨‍🏫' : (currentUser.role === 'admin' ? '👑' : (currentUser.role === 'admin_assistant' ? '🤝' : '🛡️'))); let roleName = currentUser.role === 'student' ? 'Ученик' : (currentUser.role === 'teacher' ? 'Учитель' : (currentUser.role === 'admin' ? 'Админ' : (currentUser.role === 'admin_assistant' ? 'Помощник' : 'Модератор'))); area.innerHTML = `<div class="profile-menu"><div class="profile-trigger"><div class="avatar-small" style="${currentUser.avatar ? `background-image:url(${currentUser.avatar});` : ''}">${currentUser.avatar ? '' : currentUser.username.charAt(0)}</div><span>${currentUser.username}</span><span class="role-badge">${icon} ${roleName}</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-menu"><div class="dropdown-item" onclick="navigateTo('profile')">Профиль</div><div class="dropdown-item" onclick="navigateTo('modules')">Курс</div><div class="dropdown-item logout" onclick="logout()">Выйти</div></div></div>`; } else { area.innerHTML = `<div class="auth-buttons"><button class="btn-login" id="loginBtn">Вход</button><button class="btn-register" id="headerRegBtn">Регистрация</button></div>`; document.getElementById('loginBtn')?.addEventListener('click', openLoginModal); document.getElementById('headerRegBtn')?.addEventListener('click', openRegisterModal); } }
+    function renderAllCourses() { const card = `<div class="course-card" onclick="navigateTo('modules')"><div class="card-img"><i class="fa-brands fa-python" style="font-size:3rem;"></i></div><div class="card-content"><div class="card-title">Python для начинающих</div><div class="card-desc">2 модуля, AI-проверка</div></div></div>`; document.getElementById('homeCoursesGrid').innerHTML = card; document.getElementById('allCoursesGrid').innerHTML = card; }
+    function openRegisterModal() { 
+        const html = `<div id="authModalOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:1000;">
+            <div style="background:white; max-width:450px; width:90%; border-radius:32px; padding:2rem;">
+                <h3>Регистрация</h3>
+                <input type="text" id="regUsername" placeholder="Логин" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:0.8rem;">
+                <input type="email" id="regEmail" placeholder="Email" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:0.8rem;">
+                <input type="password" id="regPassword" placeholder="Пароль (мин. 4)" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:0.8rem;">
+                <div class="radio-group" style="margin:0.8rem 0;">
+                    <label><input type="radio" name="regRole" value="student" checked> 🎓 Ученик</label>
+                    <label><input type="radio" name="regRole" value="teacher"> 👨‍🏫 Учитель</label>
+                    <label><input type="radio" name="regRole" value="moderator"> 🛡️ Модератор</label>
+                    <label><input type="radio" name="regRole" value="admin_assistant"> 🤝 Администратор-помощник</label>
+                    <label><input type="radio" name="regRole" value="admin"> 👑 Администратор</label>
+                </div>
+                <div class="access-code-field">
+                    <input type="text" id="regAccessCode" placeholder="Код доступа" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1;">
+                </div>
+                <button id="submitRegBtn" class="btn-register" style="width:100%; margin-top:1rem;">Зарегистрироваться</button>
+                <button id="closeAuthModal" style="margin-top:1rem; background:none; border:none; color:#64748b; cursor:pointer; width:100%;">Отмена</button>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', html); 
+        const ov = document.getElementById('authModalOverlay'); 
+        const close = () => ov.remove(); 
+        document.getElementById('closeAuthModal')?.addEventListener('click', close); 
+        document.getElementById('submitRegBtn')?.addEventListener('click', () => { 
+            const un = document.getElementById('regUsername').value.trim(); 
+            const em = document.getElementById('regEmail').value.trim(); 
+            const pw = document.getElementById('regPassword').value; 
+            const role = document.querySelector('input[name="regRole"]:checked').value; 
+            const code = document.getElementById('regAccessCode')?.value.trim() || null; 
+            if(!un || !em || pw.length<4) { showToast('Проверьте поля', false); return; } 
+            const res = registerUser(un, em, pw, role, code); 
+            if(res.success) { showToast('Регистрация успешна!', true); close(); openLoginModal(); } 
+            else showToast(res.message, false); 
+        }); 
+        ov.addEventListener('click', (e) => { if(e.target === ov) close(); }); 
+    }
+    function openLoginModal() { 
+        const html = `<div id="authModalOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:1000;">
+            <div style="background:white; max-width:450px; width:90%; border-radius:32px; padding:2rem;">
+                <h3>Вход</h3>
+                <input type="text" id="loginUsername" placeholder="Логин или Email" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:0.8rem;">
+                <input type="password" id="loginPassword" placeholder="Пароль" style="width:100%; padding:0.7rem; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:0.8rem;">
+                <div class="radio-group" style="margin:0.8rem 0;">
+                    <label><input type="radio" name="loginRole" value="student" checked> 🎓 Ученик</label>
+                    <label><input type="radio" name="loginRole" value="teacher"> 👨‍🏫 Учитель</label>
+                    <label><input type="radio" name="loginRole" value="moderator"> 🛡️ Модератор</label>
+                    <label><input type="radio" name="loginRole" value="admin_assistant"> 🤝 Администратор-помощник</label>
+                    <label><input type="radio" name="loginRole" value="admin"> 👑 Администратор</label>
+                </div>
+                <button id="submitLoginBtn" class="btn-register" style="width:100%; margin-top:1rem;">Войти</button>
+                <button id="closeAuthModal" style="margin-top:1rem; background:none; border:none; color:#64748b; cursor:pointer; width:100%;">Отмена</button>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', html); 
+        const ov = document.getElementById('authModalOverlay'); 
+        const close = () => ov.remove(); 
+        document.getElementById('closeAuthModal')?.addEventListener('click', close); 
+        document.getElementById('submitLoginBtn')?.addEventListener('click', () => { 
+            const login = document.getElementById('loginUsername').value.trim(); 
+            const pw = document.getElementById('loginPassword').value; 
+            const role = document.querySelector('input[name="loginRole"]:checked').value; 
+            if(!login || !pw) { showToast('Заполните поля', false); return; } 
+            const res = loginUser(login, pw, role); 
+            if(res.success) { 
+                setCurrentUser(res.user); 
+                showToast(`Добро пожаловать, ${res.user.username}!`, true); 
+                close(); 
+                navigateTo('modules'); 
+                renderModulesPage(); 
+                updateProfileUI(); 
+            } else showToast(res.message, false); 
+        }); 
+        ov.addEventListener('click', (e) => { if(e.target === ov) close(); }); 
+    }
+    function navigateTo(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); if(pageId === 'home') document.getElementById('homePage').classList.add('active'); else if(pageId === 'courses') document.getElementById('coursesPage').classList.add('active'); else if(pageId === 'modules') { if(!currentUser) { showToast('Войдите', false); openLoginModal(); return; } document.getElementById('modulesPage').classList.add('active'); renderModulesPage(); } else if(pageId === 'profile') { if(!currentUser) { showToast('Войдите', false); openLoginModal(); return; } document.getElementById('profilePage').classList.add('active'); updateProfileUI(); } else if(pageId === 'statistics') { if(!currentUser || (currentUser.role !== 'moderator' && currentUser.role !== 'admin' && currentUser.role !== 'admin_assistant')) { showToast('Доступ только для модераторов/администраторов', false); return; } document.getElementById('statisticsPage').classList.add('active'); renderStatistics('active'); } else if(pageId === 'chats') { if(!currentUser || (currentUser.role !== 'moderator' && currentUser.role !== 'admin' && currentUser.role !== 'admin_assistant')) { showToast('Доступ только для модераторов/администраторов', false); return; } document.getElementById('chatsPage').classList.add('active'); renderChatsList(); } else if(pageId === 'teacherTasks') { if(!currentUser || currentUser.role !== 'teacher') { showToast('Доступ только для учителей', false); return; } document.getElementById('teacherTasksPage').classList.add('active'); renderTeacherUI(); } else if(pageId === 'module1') { document.getElementById('module1Page').classList.add('active'); renderModule1Subgroups(); } else if(pageId === 'module2') { document.getElementById('module2Page').classList.add('active'); renderModule2Subgroups(); } else if(pageId === 'subgroup1_1') { document.getElementById('subgroup1_1Page').classList.add('active'); renderSubgroup1_1Tasks(); updateNextButton('1_1'); } else if(pageId === 'subgroup1_2') { document.getElementById('subgroup1_2Page').classList.add('active'); renderSubgroup1_2Tasks(); updateNextButton('1_2'); } else if(pageId === 'subgroup2_1') { document.getElementById('subgroup2_1Page').classList.add('active'); renderSubgroup2_1Tasks(); updateNextButton('2_1'); } else if(pageId === 'subgroup2_2') { document.getElementById('subgroup2_2Page').classList.add('active'); renderSubgroup2_2Tasks(); updateNextButton('2_2'); } window.scrollTo({ top: 0 }); closeSidebar(); }
+    
+    function resetUserTask(userId, taskId) {
+        const user = usersDatabase.find(u => u.id === userId);
+        if(!user) return;
+        if(user.taskProgress && user.taskProgress[taskId] !== undefined) {
+            user.taskProgress[taskId] = false;
+            if(user.taskAttempts && user.taskAttempts[taskId]) {
+                user.taskAttempts[taskId].attempts = 0;
+                user.taskAttempts[taskId].failed = false;
+            }
+            saveUsersDatabase();
+            if(currentUser && currentUser.id === userId) {
+                taskProgress = user.taskProgress;
+                taskAttempts = user.taskAttempts || {};
+                saveCurrentUserProgress();
+                renderModulesPage();
+                updateProfileUI();
+                const activePage = document.querySelector('.page.active');
+                if(activePage && activePage.id === 'subgroup1_1Page') renderSubgroup1_1Tasks();
+                if(activePage && activePage.id === 'subgroup1_2Page') renderSubgroup1_2Tasks();
+                if(activePage && activePage.id === 'subgroup2_1Page') renderSubgroup2_1Tasks();
+                if(activePage && activePage.id === 'subgroup2_2Page') renderSubgroup2_2Tasks();
+            }
+            showToast(`Задание "${TASK_NAMES[taskId] || taskId}" сброшено у ${user.username}`, true);
+            renderStatistics('active');
+        } else { showToast('Задание не найдено', false); }
+    }
+    
+    function deleteUserAccount(userId) {
+        const user = usersDatabase.find(u => u.id === userId);
+        if(!user) return;
+        if(!currentUser) { showToast('Не авторизован', false); return; }
+        
+        const currentRoleIndex = ROLE_HIERARCHY.indexOf(currentUser.role);
+        const userRoleIndex = ROLE_HIERARCHY.indexOf(user.role);
+        
+        if((currentUser.role === 'admin' || currentUser.role === 'admin_assistant') && userRoleIndex < currentRoleIndex && userRoleIndex <= ROLE_HIERARCHY.indexOf('moderator')) {
+            if(confirm(`Удалить аккаунт пользователя "${user.username}"? Это действие необратимо.`)) {
+                const idx = usersDatabase.findIndex(u => u.id === userId);
+                if(idx !== -1) {
+                    deletedUsersLog.push({ ...usersDatabase[idx], deletedAt: new Date().toLocaleString() });
+                    usersDatabase.splice(idx, 1);
+                    saveUsersDatabase();
+                    if(currentUser && currentUser.id === userId) {
+                        currentUser = null;
+                        localStorage.removeItem('stepik_current_user');
+                        renderAuthUI();
+                        updateNavForRole();
+                        updateSidebarMenu();
+                        navigateTo('home');
+                    }
+                    showToast(`Аккаунт "${user.username}" удалён`, true);
+                    renderStatistics('active');
+                    renderChatsList();
+                }
+            }
+        } else {
+            showToast('У вас нет прав на удаление этого пользователя', false);
+        }
+    }
+    
+    function changeUserRole(userId, newRole) {
+        const user = usersDatabase.find(u => u.id === userId);
+        if(!user) return;
+        if(user.role === newRole) { showToast('Роль не изменена', false); return; }
+        if(!currentUser) { showToast('Не авторизован', false); return; }
+        
+        const currentRoleIndex = ROLE_HIERARCHY.indexOf(currentUser.role);
+        const targetRoleIndex = ROLE_HIERARCHY.indexOf(newRole);
+        const userRoleIndex = ROLE_HIERARCHY.indexOf(user.role);
+        
+        if(userRoleIndex >= currentRoleIndex) {
+            showToast(`Вы не можете изменять роль у пользователя с ролью ${ROLE_NAMES[user.role]} или выше`, false);
+            return;
+        }
+        
+        let canChange = false;
+        if(currentUser.role === 'admin') {
+            if(newRole !== 'admin' && targetRoleIndex < ROLE_HIERARCHY.indexOf('admin')) {
+                canChange = true;
+            } else {
+                showToast('Нельзя назначить роль Администратора', false);
+                return;
+            }
+        } 
+        else if(currentUser.role === 'admin_assistant') {
+            if(targetRoleIndex <= ROLE_HIERARCHY.indexOf('moderator') && targetRoleIndex >= 0 && targetRoleIndex < currentRoleIndex) {
+                canChange = true;
+            } else {
+                showToast('Администратор-помощник может назначать роли только: Ученик, Учитель, Модератор', false);
+                return;
+            }
+        }
+        else if(currentUser.role === 'moderator') {
+            if((newRole === 'student' || newRole === 'teacher') && targetRoleIndex < currentRoleIndex) {
+                canChange = true;
+            } else {
+                showToast('Модератор может назначать только роли: Ученик, Учитель', false);
+                return;
+            }
+        }
+        
+        if(!canChange) {
+            showToast('У вас недостаточно прав для назначения этой роли', false);
+            return;
+        }
+        
+        user.role = newRole;
+        saveUsersDatabase();
+        if(currentUser && currentUser.id === userId) {
+            currentUser.role = newRole;
+            renderAuthUI();
+            updateProfileUI();
+            updateNavForRole();
+        }
+        showToast(`Роль пользователя ${user.username} изменена на ${ROLE_NAMES[newRole]}`, true);
+        renderStatistics('active');
+    }
+    
+    function getAvailableRolesForCurrentUser() {
+        if(!currentUser) return [];
+        const currentRoleIndex = ROLE_HIERARCHY.indexOf(currentUser.role);
+        const available = [];
+        for(let i = 0; i < currentRoleIndex; i++) {
+            available.push(ROLE_HIERARCHY[i]);
+        }
+        return available;
+    }
+    
+    function canDeleteUser(user) {
+        if(!currentUser) return false;
+        if(currentUser.id === user.id) return false;
+        const currentRoleIndex = ROLE_HIERARCHY.indexOf(currentUser.role);
+        const userRoleIndex = ROLE_HIERARCHY.indexOf(user.role);
+        return (currentUser.role === 'admin' || currentUser.role === 'admin_assistant') && userRoleIndex < currentRoleIndex && userRoleIndex <= ROLE_HIERARCHY.indexOf('moderator');
+    }
+    
+    function renderStatistics(type) { 
+        const cont = document.getElementById('statsContent'); 
+        if(type === 'active') { 
+            if(!usersDatabase.length) { cont.innerHTML = '<p>Нет пользователей</p>'; return; } 
+            let h = '<table class="stats-table"><thead><tr><th>Логин</th><th>Email</th><th>Роль</th><th>Прогресс</th><th>Управление</th></tr></thead><tbody>'; 
+            const availableRoles = getAvailableRolesForCurrentUser();
+            const hasRoleChangeAccess = availableRoles.length > 0;
+            const currentRoleIndex = currentUser ? ROLE_HIERARCHY.indexOf(currentUser.role) : -1;
+            
+            usersDatabase.forEach(u => { 
+                let comp = u.taskProgress ? Object.values(u.taskProgress).filter(v=>v).length : 0;
+                const isSelf = currentUser && currentUser.id === u.id;
+                const userRoleIndex = ROLE_HIERARCHY.indexOf(u.role);
+                let roleDisplay = ROLE_NAMES[u.role] || u.role;
+                const canDelete = canDeleteUser(u);
+                
+                let roleControls = '';
+                if(hasRoleChangeAccess && !isSelf && userRoleIndex < currentRoleIndex) {
+                    const buttons = [];
+                    for(const role of availableRoles) {
+                        if(role !== u.role) {
+                            const roleInfo = {
+                                'student': { icon: '🎓', name: 'Ученик', class: 'student' },
+                                'teacher': { icon: '👨‍🏫', name: 'Учитель', class: 'teacher' },
+                                'moderator': { icon: '🛡️', name: 'Модератор', class: 'moderator' },
+                                'admin_assistant': { icon: '🤝', name: 'Админ-помощник', class: 'admin-assistant' }
+                            };
+                            const info = roleInfo[role];
+                            if(info) {
+                                buttons.push(`<button class="role-icon-btn ${info.class}" onclick="changeUserRole(${u.id}, '${role}')" title="Назначить ${info.name}">${info.icon} ${info.name}</button>`);
+                            }
+                        }
+                    }
+                    roleControls = buttons.length ? `<div class="role-change-buttons">${buttons.join('')}</div>` : `<span class="text-muted">Нет доступных ролей</span>`;
+                } else if(isSelf) {
+                    roleControls = `<span class="text-muted">Нельзя изменить свою роль</span>`;
+                } else if(userRoleIndex >= currentRoleIndex) {
+                    roleControls = `<span class="text-muted">Роль выше или равна вашей</span><span class="admin-only-tag">🔒</span>`;
+                } else {
+                    roleControls = `<span class="text-muted">Доступ ограничен</span><span class="admin-only-tag">🔒</span>`;
+                }
+                
+                h += `<tr>
+                        <td>${u.username}</td>
+                        <td>${u.email}</td>
+                        <td>${roleDisplay}</td>
+                        <td>${comp}/12</span></td>
+                        <td>
+                            <div class="manage-buttons">
+                                <button class="btn-sm btn-reset-progress" onclick="resetUserProgress(${u.id})">Сброс всего</button>
+                                <button class="btn-sm" style="background:#8b5cf6; color:white;" onclick="showTaskResetModal(${u.id}, '${u.username}')">Сброс задания</button>
+                                ${roleControls}
+                                ${canDelete ? `<button class="btn-sm btn-delete-user" onclick="deleteUserAccount(${u.id})">🗑️ Удалить</button>` : ''}
+                            </div>
+                          </span></td>
+                    </tr>`; 
+            }); 
+            h += '</tbody> </tr>'; 
+            cont.innerHTML = h; 
+        } else { 
+            if(!deletedUsersLog.length) { cont.innerHTML = '<p>Нет удалённых</p>'; return; } 
+            let h = '<table class="stats-table"><thead><tr><th>Логин</th><th>Email</th><th>Роль</th><th>Прогресс</th><th>Дата удаления</th></tr></thead><tbody>'; 
+            deletedUsersLog.forEach(u => { 
+                let comp = u.taskProgress ? Object.values(u.taskProgress).filter(v=>v).length : 0; 
+                h += `<tr class="deleted-user"><td>${u.username}</td><td>${u.email}</td><td>${u.role === 'student' ? 'Ученик' : 'Учитель'}<td>${comp}/12</span></td><td>${u.deletedAt || '—'}<tr></tr>`; 
+            }); 
+            h += '</tbody></table>'; 
+            cont.innerHTML = h; 
+        } 
+    }
+    
+    function showTaskResetModal(userId, username) {
+        const modalHtml = `
+            <div id="taskResetModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:3000;">
+                <div style="background:white; max-width:500px; width:90%; border-radius:32px; padding:1.5rem;">
+                    <h3>Сброс задания для ${username}</h3>
+                    <div class="task-checkbox-list">
+                        ${ALL_TASK_IDS.map(taskId => `<label class="task-check"><input type="checkbox" value="${taskId}"> ${TASK_NAMES[taskId] || taskId}</label>`).join('')}
+                    </div>
+                    <div style="margin-top:1rem; display:flex; gap:1rem;">
+                        <button id="confirmTaskReset" class="btn-register" style="background:#ef4444;">Сбросить выбранные</button>
+                        <button id="closeTaskModal" class="btn-login">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modal = document.getElementById('taskResetModal');
+        const close = () => modal.remove();
+        document.getElementById('closeTaskModal')?.addEventListener('click', close);
+        document.getElementById('confirmTaskReset')?.addEventListener('click', () => {
+            const checkboxes = modal.querySelectorAll('input[type="checkbox"]:checked');
+            if(checkboxes.length === 0) { showToast('Выберите задания', false); return; }
+            checkboxes.forEach(cb => { resetUserTask(userId, cb.value); });
+            close();
+        });
+        modal.addEventListener('click', (e) => { if(e.target === modal) close(); });
+    }
+    
+    function resetUserProgress(userId) { 
+        const user = usersDatabase.find(u => u.id === userId); 
+        if(!user) return; 
+        ALL_TASK_IDS.forEach(id => { user.taskProgress[id] = false; if(user.taskAttempts) user.taskAttempts[id] = { attempts:0, failed:false }; }); 
+        saveUsersDatabase(); 
+        if(currentUser && currentUser.id === userId) { 
+            taskProgress = user.taskProgress; 
+            taskAttempts = user.taskAttempts || {};
+            saveCurrentUserProgress(); 
+            renderModulesPage(); 
+            updateProfileUI(); 
+        } 
+        showToast(`Прогресс ${user.username} сброшен`, true); 
+        renderStatistics('active'); 
+    }
+    
+    function renderChatsList() { 
+        const container = document.getElementById('chatsList'); 
+        if(!container || !currentUser || (currentUser.role !== 'moderator' && currentUser.role !== 'admin' && currentUser.role !== 'admin_assistant')) return; 
+        const tickets = [...supportTickets].reverse(); 
+        if(tickets.length === 0) { container.innerHTML = '<p>Нет обращений</p>'; return; } 
+        container.innerHTML = tickets.map(t => `<div class="chat-item" onclick="openModeratorChat(${t.userId})"><strong>${t.userName}</strong> <span class="ticket-badge">${t.messages.filter(m => !m.isSupport).length} новых</span></div>`).join(''); 
+    }
+    
+    function openModeratorChat(userId) { 
+        const ticket = supportTickets.find(t => t.userId === userId); 
+        if(!ticket) return; 
+        currentOpenTicketId = userId; 
+        const user = usersDatabase.find(u => u.id === userId); 
+        document.getElementById('modChatTitle').innerText = `Чат с ${user?.username}`; 
+        const container = document.getElementById('modChatMessages'); 
+        container.innerHTML = ticket.messages.map(msg => `<div class="message ${msg.isSupport ? 'support' : 'user'}"><div>${msg.text || ''}</div>${msg.files ? msg.files.map(f => `<a href="${f.data}" download="${f.name}" class="file-link">📎 ${f.name}</a>`).join('') : ''}<small>${msg.date}</small></div>`).join(''); 
+        document.getElementById('moderatorChatModal').classList.add('active'); 
+    }
+    
+    function sendModeratorReply() { 
+        const input = document.getElementById('modReplyInput'); 
+        const text = input.value.trim(); 
+        if(!text || !currentOpenTicketId) return; 
+        const ticket = supportTickets.find(t => t.userId === currentOpenTicketId); 
+        if(ticket) { 
+            ticket.messages.push({ id: Date.now(), text, files: [], date: new Date().toLocaleString(), isSupport: true }); 
+            saveSupportTickets(); 
+            input.value = ''; 
+            openModeratorChat(currentOpenTicketId); 
+            renderChatsList(); 
+            showToast('Ответ отправлен', true); 
+        } 
+    }
+    
+    function deleteTicket() { if(!currentOpenTicketId) return; if(confirm('Удалить тикет?')) { supportTickets = supportTickets.filter(t => t.userId !== currentOpenTicketId); saveSupportTickets(); document.getElementById('moderatorChatModal').classList.remove('active'); renderChatsList(); showToast('Тикет удалён', true); } }
+    function closeModeratorChat() { document.getElementById('moderatorChatModal').classList.remove('active'); currentOpenTicketId = null; }
+    
+    function getOrCreateTicket() { 
+        let ticket = supportTickets.find(t => t.userId === currentUser.id); 
+        if(!ticket) { 
+            ticket = { ticketId: Date.now(), userId: currentUser.id, userName: currentUser.username, messages: [] }; 
+            supportTickets.push(ticket); 
+            saveSupportTickets(); 
+        } 
+        return ticket; 
+    }
+    
+    function sendSupportMessage() { 
+        if(!currentUser) { showToast('Сначала войдите в аккаунт', false); return; }
+        const text = document.getElementById('chatMessageText').value.trim(); 
+        const fileInput = document.getElementById('chatFileInput'); 
+        if(!text && (!fileInput || !fileInput.files.length)) return showToast('Введите сообщение', false); 
+        const process = (fileData) => { 
+            const ticket = getOrCreateTicket(); 
+            ticket.messages.push({ id: Date.now(), text: text || '', files: fileData ? [fileData] : [], date: new Date().toLocaleString(), isSupport: false }); 
+            saveSupportTickets(); 
+            if(document.getElementById('chatMessageText')) document.getElementById('chatMessageText').value = ''; 
+            if(fileInput) fileInput.value = ''; 
+            renderChatMessages(); 
+            showToast('Сообщение отправлено в поддержку', true); 
+            if(currentUser.role === 'moderator' || currentUser.role === 'admin' || currentUser.role === 'admin_assistant') renderChatsList(); 
+        }; 
+        if(fileInput && fileInput.files.length) { 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { process({ name: fileInput.files[0].name, type: fileInput.files[0].type, data: e.target.result }); }; 
+            reader.readAsDataURL(fileInput.files[0]); 
+        } else { process(null); } 
+    }
+    
+    function renderChatMessages() { 
+        const container = document.getElementById('chatMessages'); 
+        if(!container) return; 
+        if(!currentUser) { container.innerHTML = '<div class="text-muted">Войдите, чтобы написать в поддержку</div>'; return; }
+        const ticket = supportTickets.find(t => t.userId === currentUser.id); 
+        if(!ticket || ticket.messages.length === 0) { container.innerHTML = '<div class="text-muted">Нет сообщений. Напишите нам!</div>'; return; } 
+        container.innerHTML = ticket.messages.map(msg => `<div class="message ${msg.isSupport ? 'support' : 'user'}"><div>${msg.text || ''}</div>${msg.files ? msg.files.map(f => `<a href="${f.data}" download="${f.name}" class="file-link">📎 ${f.name}</a>`).join('') : ''}<small>${msg.date}</small></div>`).join(''); 
+        container.scrollTop = container.scrollHeight; 
+    }
+    
+    loadUsersDatabase(); loadCurrentSession(); renderAllCourses(); navigateTo('home');
+    document.getElementById('resetSubgroupBtn1_1')?.addEventListener('click', resetSubgroupProgress1_1);
+    document.getElementById('resetSubgroupBtn1_2')?.addEventListener('click', resetSubgroupProgress1_2);
+    document.getElementById('resetSubgroupBtn2_1')?.addEventListener('click', resetSubgroupProgress2_1);
+    document.getElementById('resetSubgroupBtn2_2')?.addEventListener('click', resetSubgroupProgress2_2);
+    document.getElementById('nextSubgroup1_1Btn')?.addEventListener('click', () => goToNextSubgroup('1_1'));
+    document.getElementById('nextSubgroup1_2Btn')?.addEventListener('click', () => goToNextSubgroup('1_2'));
+    document.getElementById('nextSubgroup2_1Btn')?.addEventListener('click', () => goToNextSubgroup('2_1'));
+    document.getElementById('nextSubgroup2_2Btn')?.addEventListener('click', () => goToNextSubgroup('2_2'));
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', deleteAccount);
+    document.getElementById('showActiveUsersBtn')?.addEventListener('click', () => renderStatistics('active'));
+    document.getElementById('showDeletedUsersBtn')?.addEventListener('click', () => renderStatistics('deleted'));
+    document.getElementById('adminLoginFooterBtn')?.addEventListener('click', () => openLoginModal());
+    
+    // Редактирование профиля
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+    const editUsernameInput = document.getElementById('editUsername');
+    const editEmailInput = document.getElementById('editEmail');
+    
+    function openEditProfileModal() {
+        if(!currentUser) return;
+        editUsernameInput.value = currentUser.username;
+        editEmailInput.value = currentUser.email;
+        editProfileModal.classList.add('active');
+    }
+    
+    function closeEditProfileModal() {
+        editProfileModal.classList.remove('active');
+    }
+    
+    function saveProfileChanges() {
+        const newUsername = editUsernameInput.value.trim();
+        const newEmail = editEmailInput.value.trim();
+        
+        if(!newUsername || !newEmail) {
+            showToast('Заполните все поля', false);
+            return;
+        }
+        
+        if(newUsername !== currentUser.username) {
+            if(findUserByUsername(newUsername)) {
+                showToast('Этот никнейм уже занят', false);
+                return;
+            }
+        }
+        
+        if(newEmail !== currentUser.email) {
+            if(findUserByEmail(newEmail)) {
+                showToast('Этот email уже используется', false);
+                return;
+            }
+        }
+        
+        const idx = usersDatabase.findIndex(u => u.id === currentUser.id);
+        if(idx !== -1) {
+            usersDatabase[idx].username = newUsername;
+            usersDatabase[idx].email = newEmail;
+            currentUser.username = newUsername;
+            currentUser.email = newEmail;
+            saveUsersDatabase();
+            updateProfileUI();
+            renderAuthUI();
+            showToast('Данные успешно обновлены', true);
+            closeEditProfileModal();
+        }
+    }
+    
+    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+    const avatarModal = document.getElementById('avatarModal');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+    const previewImage = document.getElementById('previewImage');
+    const saveAvatarBtn = document.getElementById('saveAvatarBtn');
+    const cancelAvatarBtn = document.getElementById('cancelAvatarBtn');
+    
+    function openAvatarModal() {
+        if(!currentUser) return;
+        if(currentUser.avatar) {
+            previewImage.src = currentUser.avatar;
+        } else {
+            previewImage.src = '';
+        }
+        previewImage.style.display = 'block';
+        avatarFileInput.value = '';
+        avatarModal.classList.add('active');
+    }
+    
+    function closeAvatarModal() {
+        avatarModal.classList.remove('active');
+        previewImage.src = '';
+    }
+    
+    function previewSelectedAvatar() {
+        const file = avatarFileInput.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    function saveAvatarChanges() {
+        const file = avatarFileInput.files[0];
+        if(file) {
+            updateAvatar(file);
+            closeAvatarModal();
+        } else {
+            showToast('Выберите файл', false);
+        }
+    }
+    
+    if(editProfileBtn) editProfileBtn.addEventListener('click', openEditProfileModal);
+    if(saveProfileBtn) saveProfileBtn.addEventListener('click', saveProfileChanges);
+    if(cancelProfileBtn) cancelProfileBtn.addEventListener('click', closeEditProfileModal);
+    if(editProfileModal) editProfileModal.addEventListener('click', (e) => { if(e.target === editProfileModal) closeEditProfileModal(); });
+    
+    if(changeAvatarBtn) changeAvatarBtn.addEventListener('click', openAvatarModal);
+    if(avatarFileInput) avatarFileInput.addEventListener('change', previewSelectedAvatar);
+    if(saveAvatarBtn) saveAvatarBtn.addEventListener('click', saveAvatarChanges);
+    if(cancelAvatarBtn) cancelAvatarBtn.addEventListener('click', closeAvatarModal);
+    if(avatarModal) avatarModal.addEventListener('click', (e) => { if(e.target === avatarModal) closeAvatarModal(); });
+    
+    document.getElementById('avatarUpload')?.addEventListener('change', (e) => { if(e.target.files[0]) updateAvatar(e.target.files[0]); });
+    
+    // Боковое меню
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    
+    if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if(sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    
+    const openChatBtn = document.getElementById('openChatBtn');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const supportChatModal = document.getElementById('supportChatModal');
+    const chatMessageText = document.getElementById('chatMessageText');
+    const chatFileInput = document.getElementById('chatFileInput');
+    
+    if(openChatBtn) openChatBtn.addEventListener('click', () => { 
+        if(!currentUser) { showToast('Войдите в аккаунт', false); openLoginModal(); return; } 
+        if(supportChatModal) supportChatModal.classList.toggle('active'); 
+        if(supportChatModal && supportChatModal.classList.contains('active')) renderChatMessages(); 
+    });
+    if(closeChatBtn) closeChatBtn.addEventListener('click', () => { if(supportChatModal) supportChatModal.classList.remove('active'); });
+    if(sendChatBtn) sendChatBtn.addEventListener('click', sendSupportMessage);
+    if(chatMessageText) chatMessageText.addEventListener('keypress', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendSupportMessage(); } });
+    
+    document.getElementById('closeModChatBtn')?.addEventListener('click', closeModeratorChat);
+    document.getElementById('sendModReplyBtn')?.addEventListener('click', sendModeratorReply);
+    document.getElementById('deleteTicketBtn')?.addEventListener('click', deleteTicket);
+    document.getElementById('createGroupBtn')?.addEventListener('click', createGroup);
+    window.navigateTo = navigateTo; window.checkWithAI_1_1 = checkWithAI_1_1; window.checkTaskWithAI_1_2 = checkTaskWithAI_1_2; window.checkTask2_1 = checkTask2_1; window.checkTask2_2 = checkTask2_2;
+    window.showAnswerForTask = showAnswerForTask; window.closeAnswerModal = closeAnswerModal; window.goBackToModules = goBackToModules; window.goBackToModule1 = goBackToModule1; window.goBackToModule2 = goBackToModule2;
+    window.resetSubgroupProgress2_1 = resetSubgroupProgress2_1; window.resetSubgroupProgress2_2 = resetSubgroupProgress2_2; window.resetUserProgress = resetUserProgress; window.resetUserTask = resetUserTask; window.changeUserRole = changeUserRole; window.showTaskResetModal = showTaskResetModal;
+    window.openModeratorChat = openModeratorChat; window.addTaskToGroup = addTaskToGroup; window.deleteGroup = deleteGroup; window.renderTeacherUI = renderTeacherUI;
+    window.deleteUserAccount = deleteUserAccount;
+    window.closeSidebar = closeSidebar;
+    checkInviteOnLoad();
+</script>
+</body>
+</html>
